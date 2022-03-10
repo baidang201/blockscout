@@ -1957,9 +1957,15 @@ defmodule Explorer.Chain do
     |> Repo.one()
     |> case do
       nil ->
+        Logger.info(fn -> [
+            "#####hash_to_transaction is  nil"] 
+        end)
         {:error, :not_found}
 
       transaction ->
+        Logger.info(fn -> [
+            "#####hash_to_transaction is  ok"] 
+        end)
         {:ok, transaction}
     end
   end
@@ -3686,7 +3692,12 @@ defmodule Explorer.Chain do
   def transaction_to_status(%Transaction{status: :error, error: nil}),
     do: {:error, :awaiting_internal_transactions}
 
-  def transaction_to_status(%Transaction{status: :error, error: error}) when is_binary(error), do: {:error, error}
+  def transaction_to_status(%Transaction{status: :error, error: error}) when is_binary(error) do
+    Logger.info(fn -> [
+            "#####transaction_to_status in"] 
+    end)
+    {:error, error}
+   end
 
   def transaction_to_revert_reason(transaction) do
     %Transaction{revert_reason: revert_reason} = transaction

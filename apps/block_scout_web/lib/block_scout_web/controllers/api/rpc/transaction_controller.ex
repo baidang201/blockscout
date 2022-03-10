@@ -2,6 +2,7 @@ defmodule BlockScoutWeb.API.RPC.TransactionController do
   use BlockScoutWeb, :controller
 
   import BlockScoutWeb.Chain, only: [paging_options: 1, next_page_params: 3, split_list_by_page: 1]
+  require Logger
 
   alias Explorer.Chain
   alias Explorer.Chain.Transaction
@@ -78,6 +79,7 @@ defmodule BlockScoutWeb.API.RPC.TransactionController do
   end
 
   defp transaction_from_hash(transaction_hash) do
+    Logger.info(fn -> [ "#####transaction_from_hash"] end)
     case Chain.hash_to_transaction(transaction_hash, necessity_by_association: %{block: :required}) do
       {:error, :not_found} -> {:transaction, :error}
       {:ok, transaction} -> {:transaction, {:ok, transaction}}
@@ -89,6 +91,7 @@ defmodule BlockScoutWeb.API.RPC.TransactionController do
   end
 
   defp to_transaction_status(transaction_hash) do
+    Logger.info(fn -> [ "#####to_transaction_status"] end)
     case Chain.hash_to_transaction(transaction_hash) do
       {:error, :not_found} -> ""
       {:ok, transaction} -> transaction.status
@@ -96,11 +99,21 @@ defmodule BlockScoutWeb.API.RPC.TransactionController do
   end
 
   defp to_transaction_error(transaction_hash) do
+    Logger.info(fn -> [
+           "#####to_transaction_error  in"] 
+    end)
     with {:ok, transaction} <- Chain.hash_to_transaction(transaction_hash),
          {:error, error} <- Chain.transaction_to_status(transaction) do
+         Logger.info(fn -> [
+           "#####to_transaction_error"] 
+         end)
+
       error
     else
-      _ -> ""
+      _ -> 
+        Logger.info(fn -> ["#####to_transaction_error return empty"] end)
+        ""
+
     end
   end
 end

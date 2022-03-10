@@ -3,6 +3,8 @@ defmodule BlockScoutWeb.TransactionTokenTransferController do
 
   import BlockScoutWeb.Chain, only: [paging_options: 1, next_page_params: 3, split_list_by_page: 1]
 
+  require Logger
+
   alias BlockScoutWeb.{AccessHelpers, Controller, TransactionController, TransactionTokenTransferView}
   alias Explorer.{Chain, Market}
   alias Explorer.ExchangeRates.Token
@@ -12,9 +14,11 @@ defmodule BlockScoutWeb.TransactionTokenTransferController do
   @burn_address_hash burn_address_hash
 
   def index(conn, %{"transaction_id" => transaction_hash_string, "type" => "JSON"} = params) do
+    Logger.info(fn -> [ "#####index  transaction_token_transfer_controller.ex def index(conn, %{transaction_id => transaction_hash_string, type => JSON} = params) do"] end)
     with {:ok, transaction_hash} <- Chain.string_to_transaction_hash(transaction_hash_string),
          :ok <- Chain.check_transaction_exists(transaction_hash),
          {:ok, transaction} <-
+           
            Chain.hash_to_transaction(
              transaction_hash,
              []
@@ -81,6 +85,7 @@ defmodule BlockScoutWeb.TransactionTokenTransferController do
   end
 
   def index(conn, %{"transaction_id" => transaction_hash_string} = params) do
+    Logger.info(fn -> [ "#####index  transaction_token_transfer_controller.ex def index(conn, %{transaction_id => transaction_hash_string} = params) do"] end)
     with {:ok, transaction_hash} <- Chain.string_to_transaction_hash(transaction_hash_string),
          {:ok, transaction} <-
            Chain.hash_to_transaction(

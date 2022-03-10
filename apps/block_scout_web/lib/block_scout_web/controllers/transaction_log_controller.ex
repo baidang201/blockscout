@@ -3,14 +3,18 @@ defmodule BlockScoutWeb.TransactionLogController do
 
   import BlockScoutWeb.Chain, only: [paging_options: 1, next_page_params: 3, split_list_by_page: 1]
 
+  require Logger
+  
   alias BlockScoutWeb.{AccessHelpers, Controller, TransactionController, TransactionLogView}
   alias Explorer.{Chain, Market}
   alias Explorer.ExchangeRates.Token
   alias Phoenix.View
 
   def index(conn, %{"transaction_id" => transaction_hash_string, "type" => "JSON"} = params) do
+    Logger.info(fn -> [ "#####index  transaction_log_controller.ex def index(conn, %{transaction_id => transaction_hash_string, type => JSON} = params) do"] end)
     with {:ok, transaction_hash} <- Chain.string_to_transaction_hash(transaction_hash_string),
          {:ok, transaction} <-
+           
            Chain.hash_to_transaction(transaction_hash,
              necessity_by_association: %{[to_address: :smart_contract] => :optional}
            ),
@@ -72,8 +76,10 @@ defmodule BlockScoutWeb.TransactionLogController do
   end
 
   def index(conn, %{"transaction_id" => transaction_hash_string} = params) do
+    Logger.info(fn -> [ "#####index transaction_log_controller.ex def index(conn, %{transaction_id => transaction_hash_string} = params) do"] end)
     with {:ok, transaction_hash} <- Chain.string_to_transaction_hash(transaction_hash_string),
          {:ok, transaction} <-
+           
            Chain.hash_to_transaction(
              transaction_hash,
              necessity_by_association: %{

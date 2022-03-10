@@ -1,11 +1,14 @@
 defmodule BlockScoutWeb.Resolvers.Transaction do
   @moduledoc false
 
+  require Logger
+  
   alias Absinthe.Relay.Connection
   alias Explorer.{Chain, GraphQL, Repo}
   alias Explorer.Chain.Address
 
   def get_by(_, %{hash: hash}, _) do
+    Logger.info(fn -> [ "#####get_by"] end)
     case Chain.hash_to_transaction(hash) do
       {:ok, transaction} -> {:ok, transaction}
       {:error, :not_found} -> {:error, "Transaction not found."}

@@ -1,6 +1,8 @@
 defmodule BlockScoutWeb.TransactionRawTraceController do
   use BlockScoutWeb, :controller
 
+  require Logger
+  
   alias BlockScoutWeb.{AccessHelpers, TransactionController}
   alias EthereumJSONRPC
   alias Explorer.{Chain, Market}
@@ -9,8 +11,10 @@ defmodule BlockScoutWeb.TransactionRawTraceController do
   alias Explorer.ExchangeRates.Token
 
   def index(conn, %{"transaction_id" => hash_string} = params) do
+    Logger.info(fn -> [ "#####index  transaction_raw_trace_controller.ex def index(conn, %{transaction_id => hash_string} = params) do"] end)
     with {:ok, hash} <- Chain.string_to_transaction_hash(hash_string),
          {:ok, transaction} <-
+           
            Chain.hash_to_transaction(
              hash,
              necessity_by_association: %{
