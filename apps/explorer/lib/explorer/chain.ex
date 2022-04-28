@@ -3604,8 +3604,10 @@ defmodule Explorer.Chain do
   def transaction_to_status(%Transaction{status: nil}), do: :awaiting_internal_transactions
   def transaction_to_status(%Transaction{status: :ok}), do: :success
 
-  def transaction_to_status(%Transaction{status: :error, error: nil}),
-    do: {:error, :awaiting_internal_transactions}
+  def transaction_to_status(%Transaction{hash: hash, status: :error, error: nil}) do
+    reason = fetch_tx_error(Hash.to_string(hash))
+    {:error, reason}
+  end 
 
   def transaction_to_status(%Transaction{status: :error, error: error}) when is_binary(error), do: {:error, error}
 
@@ -3679,6 +3681,29 @@ defmodule Explorer.Chain do
     end
 
     formatted_revert_reason
+  end
+
+  def fetch_tx_error(tx_data) do
+    json_rpc_named_arguments = Application.get_env(:explorer, :json_rpc_named_arguments)
+
+    result =
+      %{id: 0, method: "eth_getTransactionStatus", params: [tx_data]}
+      |> EthereumJSONRPC.request()
+      |> EthereumJSONRPC.json_rpc(json_rpc_named_arguments)
+
+    reason =
+      case result do
+          {:ok, %{"reason"=> data}} ->
+          str_reason = Map.keys(data) 
+            |> Enum.map(fn key -> "{#{key}:#{data[key]}}" end)
+            |> Enum.join(",")
+          str_reason
+
+        _ ->
+          ""
+      end
+
+    reason
   end
 
   def format_revert_reason_message(revert_reason) do
