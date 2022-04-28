@@ -1,4 +1,4 @@
-FROM bitwalker/alpine-elixir-phoenix:1.13
+FROM bitwalker/alpine-elixir-phoenix:1.13 as builder
 
 RUN apk --no-cache --update add alpine-sdk gmp-dev automake libtool inotify-tools autoconf python3 file qemu-x86_64
 
@@ -15,6 +15,8 @@ RUN set -ex && \
 
 # Get Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+FROM builder as builder1
 
 ENV PATH="$HOME/.cargo/bin:${PATH}"
 ENV RUSTFLAGS="-C target-feature=-crt-static"
