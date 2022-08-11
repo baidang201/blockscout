@@ -63,7 +63,7 @@ defmodule Explorer.Mixfile do
       {:benchee_csv, "~> 0.8.0", only: :test},
       {:bypass, "~> 1.0", only: :test},
       {:briefly, "~> 0.4", github: "CargoSense/briefly"},
-      {:comeonin, "~> 4.0"},
+      {:comeonin, "~> 5.3"},
       {:credo, "~> 1.5", only: :test, runtime: false},
       # For Absinthe to load data in batches
       {:dataloader, "~> 1.0.0"},
