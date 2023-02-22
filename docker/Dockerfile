@@ -23,8 +23,6 @@ RUN set -ex && \
 # Get Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-FROM builder as builder1
-
 ARG CACHE_EXCHANGE_RATES_PERIOD
 ARG DISABLE_READ_API
 ARG API_PATH
