@@ -180,6 +180,7 @@ defmodule Indexer.Block.Fetcher do
                transactions: %{params: transactions_with_receipts}
              }
            ) do
+      Logger.info("fetch_and_import_range inserted: #{inserted} blocks_errors: #{blocks_errors}")
       result = {:ok, %{inserted: inserted, errors: blocks_errors}}
       update_block_cache(inserted[:blocks])
       update_transactions_cache(inserted[:transactions])
